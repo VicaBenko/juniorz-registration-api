@@ -10,7 +10,7 @@ export class NewUser {
   @IsNotEmpty()
   fullName: string;
 
-  @Transform(({ value }) => value.trim())
+  @Transform(({ value }) => value.trim().toLowerCase())
   @IsEmail()
   email: string;
 
