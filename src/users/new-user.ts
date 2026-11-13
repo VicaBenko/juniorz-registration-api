@@ -5,12 +5,12 @@ import {Transform } from 'class-transformer';
 
 export class NewUser {
 
-  @Transform(({ value }) => value.trim())
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   @IsString()
   @IsNotEmpty()
   fullName: string;
 
-  @Transform(({ value }) => value.trim().toLowerCase())
+  @Transform(({ value }) => typeof value === 'string' ? value.trim().toLowerCase() : value)
   @IsEmail()
   email: string;
 
