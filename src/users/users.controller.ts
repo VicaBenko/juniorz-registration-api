@@ -10,7 +10,6 @@ export class UsersController {
 
   @Post()
   create(@Body() user: NewUser) {
-    console.log(user);
     return this.usersService.addUser(user);
   }
 
