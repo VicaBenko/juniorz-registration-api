@@ -1,4 +1,4 @@
-# juniorz-registration-api
+# nestjs-backend
 
 A backend project that simulates user registration. It validates the full name and the email: the name must not be empty, and the email must not be empty and must match a valid email format. Once the input is valid, the user is saved to the database. If someone tries to register with an email that already exists, they receive a 409 error, meaning a duplicate. Postman is used instead of a client side, to send requests to the server's API.
 
@@ -18,8 +18,8 @@ A backend project that simulates user registration. It validates the full name a
 ## Getting started
 1. Clone the repository and enter the project folder:
    ```bash
-   git clone https://github.com/VicaBenko/juniorz-registration-api.git
-   cd juniorz-registration-api
+   git clone https://github.com/VicaBenko/nestjs-backend.git
+   cd nestjs-backend
    ```
 2. Install all the packages listed in `package.json`:
    ```bash
