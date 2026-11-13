@@ -1,132 +1,81 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# juniorz-registration-api
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A backend project that simulates user registration. It validates the full name and the email: the name must not be empty, and the email must not be empty and must match a valid email format. Once the input is valid, the user is saved to the database. If someone tries to register with an email that already exists, they receive a 409 error, meaning a duplicate. Postman is used instead of a client side, to send requests to the server's API.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tech stack
+- Node.js
+- TypeScript
+- NestJS
+- Prisma ORM
+- SQLite
+- `class-validator` and `class-transformer` (input validation)
+- Postman (manual testing)
 
-## Description
+## Prerequisites
+- Node.js v26 (developed with v26.13.0). `npm` comes with it.
+- Git
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Getting started
+1. Clone the repository and enter the project folder:
+   ```bash
+   git clone https://github.com/VicaBenko/juniorz-registration-api.git
+   cd juniorz-registration-api
+   ```
+2. Install all the packages listed in `package.json`:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file by copying `.env.example`. It holds the database address (`DATABASE_URL`).
+4. Build the database from the migrations:
+   ```bash
+   npx prisma migrate dev
+   ```
+5. Generate the Prisma client (the generated code is not committed to the repository):
+   ```bash
+   npx prisma generate
+   ```
+6. Start the server:
+   ```bash
+   npm run start:dev
+   ```
+The server runs on `http://localhost:3000`.
 
-## Project setup
+## API
 
-```bash
-$ npm install
+### `POST /users`
+Registers a new user.
+
+**Request body:**
+```json
+{
+  "fullName": "Dana Cohen",
+  "email": "dana@mail.com"
+}
 ```
+Both fields must be strings and must not be empty. The email must be in a valid email format.
 
-## Compile and run the project
+**Responses:**
+- `201 Created`: the user was saved. Returns the saved user (`fullName` and `email`).
+- `400 Bad Request`: the input is not valid (for example, an empty name or an invalid email). Returns a list of what is wrong.
+- `409 Conflict`: a user with this email already exists.
 
-```bash
-# development
-$ npm run start
+## Manual Testing (Postman)
+The endpoint was manually verified using Postman across three scenarios:
+1. **Valid registration:** Sending a valid `fullName` and a new `email` returns `201 Created` with the saved user data.
+2. **Duplicate email:** Sending an `email` that is already registered returns `409 Conflict`.
+3. **Invalid input:** Sending an empty `fullName`, a malformed `email`, or non-string values returns `400 Bad Request` with clear validation error details.
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-To add it to this project, run this and approve the code it prints at [observe.nestjs.com/link](https://observe.nestjs.com/link) - signing up for free if you have no account:
-
-```bash
-$ npx @nestjs/observe link
-```
-
-It installs `@nestjs/observe`, wires it into `AppModule` and `main.ts`, and writes the app key and secret into `.env`, which every `nest start` script (`start`, `start:dev`, `start:debug`) then loads. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead.
-
-Or do it by hand:
-
-```bash
-$ npm install @nestjs/observe
-```
-
-Then follow the [setup guide](https://docs.nestjs.com/observability/sdk) - it takes a single import and an app key.
-
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Notes
+Decisions I made and why:
+- **Duplicate email check:**
+  - *My approach:* I try to save the user directly. If the email already exists, the database rejects it with a unique-constraint error (Prisma code `P2002`). I catch this error and return `409 Conflict`. If two requests with the same email arrive at the same time, the first one is saved and the second one gets a 409.
+  - *The other approach:* first ask the database whether the email exists, and only then save the user.
+  - *Why I didn't use it:* if two requests with the same email arrive at the same time, both can pass the check before either one is saved. The database still rejects the second one, but that error is not handled, so the user gets a 500 instead of a 409. The database is the final judge, so catching its error guarantees a 409 even for parallel requests.
+- **Route:** `POST /users`. The path describes the resource (`users`), and the method describes the action (create).
+- **Email as the primary key:** different people can have the same name, so I chose the email to be the unique identifier.
+- **Separate Prisma module:** the database module has no controller, so nobody can bypass the business logic from outside. It exports `PrismaService`, so one shared instance can be used by any module that needs the database.
+- **Trimming input:** both the name and the email are trimmed before validation, so a name made only of spaces is rejected, and an email pasted with extra spaces is accepted.
+- **Lowercase email:** the email is converted to lowercase, so `Dana@Mail.com` and `dana@mail.com` are treated as the same email and count as a duplicate.
+- **Non-string input:** the trim only runs on strings. Any other type (a number, for example) is passed as is to the validation, which returns 400 instead of crashing with 500.
+- **Email validation limits:** `IsEmail` checks only the format of the address, not that it really exists. In a real system, I would send a verification email.
+- **Node.js version:** developed with Node.js v26, so others should use the same version to avoid compatibility issues.
